@@ -133,13 +133,15 @@ module ApplicationHelper
   #   link_to_project(project, {:only_path => false}, :class => "project") # => 3rd arg adds html options
   #   link_to_project(project, {}, :class => "project") # => html options with default url (project overview)
   #
-  def link_to_project(project, options={}, html_options = nil)
+  def link_to_project(project, options={}, html_options = nil, goto_wiki = nil)
     if project.archived?
       h(project.name)
     elsif options.key?(:action)
       ActiveSupport::Deprecation.warn "#link_to_project with :action option is deprecated and will be removed in Redmine 3.0."
       url = {:controller => 'projects', :action => 'show', :id => project}.merge(options)
       link_to project.name, url, html_options
+    elsif goto_wiki
+      link_to project.name, (project.module_enabled?(:wiki) ? project_wiki_path(project, options) : project_path(project, options) ), html_options
     else
       link_to project.name, project_path(project, options), html_options
     end
