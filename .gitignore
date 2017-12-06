@@ -10,6 +10,7 @@
 /config/secrets.yml
 /config/initializers/session_store.rb
 /config/initializers/secret_token.rb
+/config/newrelic.yml
 /coverage
 /db/*.db
 /db/*.sqlite3
@@ -18,6 +19,7 @@
 /lib/redmine/scm/adapters/mercurial/redminehelper.pyc
 /lib/redmine/scm/adapters/mercurial/redminehelper.pyo
 /log/*.log*
+/log/puma*
 /log/mongrel_debug
 /plugins/*
 !/plugins/README
