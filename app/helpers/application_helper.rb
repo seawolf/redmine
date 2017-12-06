@@ -166,9 +166,13 @@ module ApplicationHelper
   #   link_to_project(project, {:only_path => false}, :class => "project") # => 3rd arg adds html options
   #   link_to_project(project, {}, :class => "project") # => html options with default url (project overview)
   #
-  def link_to_project(project, options={}, html_options = nil)
+  def link_to_project(project, options={}, html_options = nil, goto_wiki = false)
     if project.archived?
       h(project.name)
+    elsif goto_wiki
+      link_to project.name,
+        (project.module_enabled?(:wiki) ? project_wiki_path(project, options) : project_path(project, options)),
+        html_options
     else
       link_to project.name,
               project_url(project, {:only_path => true}.merge(options)),
