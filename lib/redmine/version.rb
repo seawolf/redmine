@@ -13,7 +13,7 @@ module Redmine
     # * official release: nil
     # * stable branch:    stable
     # * trunk:            devel
-    BRANCH = 'stable'
+    BRANCH = 'stable-seawolf'
 
     # Retrieves the revision from the working copy
     def self.revision
