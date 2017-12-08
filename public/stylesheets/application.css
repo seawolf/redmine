@@ -1479,3 +1479,12 @@ color: #555; text-shadow: 1px 1px 0 #fff;
   height:1px;
   overflow:hidden;
 }
+
+@media screen and (max-width: 899px) {
+  div.agile-board div.container-fixed {
+    overflow: scroll;
+  }
+  div.agile-board table.issues-board {
+    min-width: 800px;
+  }
+}
