@@ -1,0 +1,27 @@
+version: '3.1'
+
+services:
+  traefik:
+    image: traefik:v2.4
+    command: --api.insecure=true --providers.docker
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    restart: always
+    environment:
+      REDMINE_SECRET_KEY_BASE: RedmineSecretKeyBase123
+    labels:
+      - traefik.http.routers.web.rule=Host(`redmine.docker.localhost`)
+      - traefik.http.services.web.loadbalancer.server.port=3000
+    volumes:
+      - $PWD/files:/usr/src/redmine/files
+      - $PWD/plugins:/usr/src/redmine/plugins
+      - $PWD/sqlite:/usr/src/redmine/sqlite
+      - $PWD/public/themes:/usr/src/redmine/public/themes
