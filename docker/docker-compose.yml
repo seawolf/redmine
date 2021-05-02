@@ -14,7 +14,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
-    restart: always
+    restart: unless-stopped
     environment:
       REDMINE_SECRET_KEY_BASE: RedmineSecretKeyBase123
     labels:
