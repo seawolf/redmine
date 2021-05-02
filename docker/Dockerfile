@@ -14,17 +14,16 @@ RUN set -eux; \
 		tzdata \
 		wget \
 		\
+		openssh-client \
 		git \
 		mercurial \
-		openssh-client \
 		subversion \
 		\
 # we need "gsfonts" for generating PNGs of Gantt charts
 # and "ghostscript" for creating PDF thumbnails (in 4.1+)
 		ghostscript \
 		ghostscript-fonts \
-        pkgconfig imagemagick6 imagemagick6-dev imagemagick6-libs \
-        # pkgconfig imagemagick imagemagick-dev imagemagick-libs \
+    pkgconfig imagemagick6 imagemagick6-dev imagemagick6-libs \
 	;
 
 ENV RAILS_PORT 3000
@@ -40,8 +39,7 @@ RUN set -eux; \
 	chown redmine:redmine "$HOME"; \
 	chmod 1777 "$HOME"
 
-# ENV REDMINE_VERSION 3.4.13-seawolf
-# ENV REDMINE_DOWNLOAD_MD5 a15a25dec7b866e213bbd4b041f05f17
+ENV REDMINE_VERSION 3.4.13-seawolf
 
 RUN set -eux; \
 	wget -O redmine.tar.gz https://github.com/seawolf/redmine/archive/master-seawolf.tar.gz ; \
@@ -62,10 +60,8 @@ RUN set -eux; \
 		freetds-dev \
 		gcc \
 		make \
-		# mariadb-dev \
 		musl-dev \
 		patch \
-		# postgresql-dev \
 		sqlite-dev \
 		ttf2ufm \
 		zlib-dev \
@@ -98,6 +94,8 @@ RUN set -eux; \
 	apk del --no-network .build-deps
 
 VOLUME /usr/src/redmine/files
+VOLUME /usr/src/redmine/plugins
+VOLUME /usr/src/redmine/public/themes
 VOLUME /usr/src/redmine/sqlite
 
 COPY docker/docker-entrypoint.sh /
