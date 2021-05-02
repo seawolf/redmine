@@ -1853,3 +1853,12 @@ th[role=columnheader]:not(.no-sort):hover:after {
 	display: inline;
 	opacity: 1;
 }
+
+@media screen and (max-width: 899px) {
+  div.agile-board div.container-fixed {
+    overflow: scroll;
+  }
+  div.agile-board table.issues-board {
+    min-width: 800px;
+  }
+}
