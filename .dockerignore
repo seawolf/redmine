@@ -1,0 +1,11 @@
+log/
+config/
+
+files/
+plugins/
+plugins-dead/
+public/themes/
+sqlite/
+
+script/
+tmp/

@@ -39,10 +39,10 @@ RUN set -eux; \
 	chown redmine:redmine "$HOME"; \
 	chmod 1777 "$HOME"
 
-ENV REDMINE_VERSION 3.4.13-seawolf
+ENV REDMINE_VERSION 4.2-stable-seawolf
 
 RUN set -eux; \
-	wget -O redmine.tar.gz https://github.com/seawolf/redmine/archive/master-seawolf.tar.gz ; \
+	wget -O redmine.tar.gz "https://github.com/seawolf/redmine/archive/$REDMINE_VERSION.tar.gz" ; \
 	tar -xf redmine.tar.gz --strip-components=1; \
 	rm redmine.tar.gz files/delete.me log/delete.me; \
 	mkdir -p log public/plugin_assets sqlite tmp/pdf tmp/pids; \
@@ -52,6 +52,8 @@ RUN set -eux; \
 # fix permissions for running as an arbitrary user
 	chmod -R ugo=rwX config db sqlite; \
 	find log tmp -type d -exec chmod 1777 '{}' +
+
+COPY Gemfile.local Gemfile.local
 
 RUN set -eux; \
 	\
@@ -84,15 +86,22 @@ RUN set -eux; \
 # https://github.com/naitoh/rbpdf/issues/31
 	rm /usr/local/bundle/gems/rbpdf-font-1.19.*/lib/fonts/ttf2ufm/ttf2ufm; \
 	\
-	runDeps="$( \
-		scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/bundle/gems \
-		| tr ',' '\n' \
-		| sort -u \
-		| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
-	)"; \
-	apk add --no-network --virtual .redmine-rundeps $runDeps; \
-	apk del --no-network .build-deps
+    apk add --no-cache --virtual .redmine-rundeps \
+      libc6-compat \
+      # so:libdl.so.2 \
+      sqlite-dev \
+    ; apk del --no-network .build-deps
 
+	# runDeps="$( \
+	# 	scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/bundle/gems \
+	# 	| tr ',' '\n' \
+	# 	| sort -u \
+	# 	| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+	# )"; \
+	# apk add --no-network --virtual .redmine-rundeps $runDeps; \
+	# apk del --no-network .build-deps
+
+VOLUME /usr/src/redmine/config
 VOLUME /usr/src/redmine/files
 VOLUME /usr/src/redmine/plugins
 VOLUME /usr/src/redmine/public/themes

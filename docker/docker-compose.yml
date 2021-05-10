@@ -2,25 +2,32 @@ version: '3.1'
 
 services:
   traefik:
+    restart: unless-stopped
     image: traefik:v2.4
-    command: --api.insecure=true --providers.docker
+    command:
+      - --api.insecure=true
+      - --providers.docker
+      - --entrypoints.web.address=:443
     ports:
-      - "80:80"
+      - "443:443"
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 
   web:
+    restart: unless-stopped
     build:
       context: .
       dockerfile: docker/Dockerfile
-    restart: unless-stopped
+    image: seawolfsanctuary/redmine
     environment:
       REDMINE_SECRET_KEY_BASE: RedmineSecretKeyBase123
     labels:
-      - traefik.http.routers.web.rule=Host(`redmine.docker.localhost`)
+      - traefik.http.routers.web.rule=Host(`redmine.seawolfsanctuary.com`)
       - traefik.http.services.web.loadbalancer.server.port=3000
     volumes:
+      - $PWD/log:/usr/src/redmine/log
+      - $PWD/config:/usr/src/redmine/config
       - $PWD/files:/usr/src/redmine/files
       - $PWD/plugins:/usr/src/redmine/plugins
       - $PWD/sqlite:/usr/src/redmine/sqlite
